@@ -181,8 +181,10 @@ function glkote_init(iface) {
     return;
   }
   el.empty();
-  if (perform_paging)
+  if (perform_paging) {
     $(document).on('keypress', evhan_doc_keypress);
+    $(document).on('paste', evhan_doc_paste);
+  }
   $(window).on('resize', evhan_doc_resize);
 
   /* Note the pixel ratio (resolution level; this is greater than 1 for
@@ -2529,6 +2531,43 @@ function evhan_doc_keypress(ev) {
     ev.preventDefault();
     return;
   }
+}
+
+/* Event handler: paste events on document should move the input 
+  focus to whichever window most recently had it.
+*/
+function evhan_doc_paste(ev) {
+  if (disabled) {
+    return;
+  }
+
+  if (ev.target.tagName.toUpperCase() == 'INPUT') {
+    /* If the focus is already on an input field, don't mess with it. */
+    return;
+  }
+  if (ev.target.className.indexOf('CanHaveInputFocus') >= 0) {
+    /* If the focus is on an element which insists it's input-like,
+       don't mess with that either. This is necessary for input fields
+       in shadow DOM and plugins. */
+    return;
+  }
+
+  var win;
+
+  if (windows_paging_count) {
+    win = windowdic[last_known_paging];
+    if (win) {
+      return;
+    }
+  }
+
+  win = windowdic[last_known_focus];
+  if (!win)
+    return;
+  if (!win.inputel)
+    return;
+
+  win.inputel.focus();
 }
 
 /* Event handler: mousedown events on windows.
