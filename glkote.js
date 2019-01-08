@@ -2503,11 +2503,11 @@ function evhan_doc_keypress(ev) {
          the right thing with the keystroke, but Firefox wouldn't. */
       /* This is completely wrong for accented characters (on a Mac
          keyboard), but that's beyond my depth. */
-      if (keycode >= 32) {
+      /* if (keycode >= 32) {
         var val = String.fromCharCode(keycode);
         win.inputel.val(win.inputel.val() + val);
       }
-      ev.preventDefault();
+      ev.preventDefault(); */
       return;
     }
 
